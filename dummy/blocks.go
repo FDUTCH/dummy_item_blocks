@@ -3,7 +3,6 @@ package dummy
 import (
 	_ "embed"
 	"encoding/json"
-	"fmt"
 	"github.com/df-mc/dragonfly/server/block"
 	"github.com/df-mc/dragonfly/server/block/model"
 	"github.com/df-mc/dragonfly/server/item"
@@ -26,11 +25,9 @@ func Register() {
 			_, ok = world.ItemByName(name, id)
 			if !ok {
 				world.RegisterItem(it)
-				fmt.Println(it.EncodeItem())
 			}
 		}
 	}
-
 }
 
 type BlockItem struct {
