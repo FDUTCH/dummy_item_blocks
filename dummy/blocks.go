@@ -2,29 +2,25 @@ package dummy
 
 import (
 	"fmt"
-	"github.com/df-mc/dragonfly/server/block"
-	"github.com/df-mc/dragonfly/server/world"
 	"log/slog"
 	"reflect"
 	_ "unsafe"
+
+	"github.com/df-mc/dragonfly/server/block"
+	"github.com/df-mc/dragonfly/server/world"
 )
 
 var (
-	unregisteredBlocks = make(map[string]world.Block)
+	allBlocks map[string]blockData
 
-	//go:linkname blocks github.com/df-mc/dragonfly/server/world.blocks
-	blocks []world.Block
-
-	allBlocks []blockData
-
-	EnabledLogging bool
+	Logging bool
 )
 
 func isRegistered(bl world.Block) bool {
 	return "unknownBlock" != reflect.ValueOf(bl).Type().Name()
 }
 
-func Register() {
+func Register(registry world.BlockRegistry) {
 	parseBlockData()
 	paseItemData()
 
@@ -33,13 +29,13 @@ func Register() {
 		registeredBlocks int
 	)
 
-	for index, b := range blocks {
+	for _, b := range registry.Blocks() {
 		if isRegistered(b) {
 			continue
 		}
 		name, state := b.EncodeBlock()
 		bl := Block{
-			index: index,
+			name:  name,
 			hash:  block.NextHash(),
 			state: state,
 		}
@@ -58,7 +54,7 @@ func Register() {
 		world.RegisterBlock(bl)
 		registeredBlocks++
 	}
-	if EnabledLogging {
+	if Logging {
 		slog.Info(fmt.Sprintf("there were registered %d new items and %d new blocks", registeredItems, registeredBlocks))
 	}
 }

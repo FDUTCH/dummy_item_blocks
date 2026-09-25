@@ -13,7 +13,7 @@ import (
 
 func main() {
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
-	dummy.EnabledLogging = true
+	dummy.Logging = true
 	dummy.Register()
 	conf, err := readConfig(slog.Default())
 	if err != nil {
