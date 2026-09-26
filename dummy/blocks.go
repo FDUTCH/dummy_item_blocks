@@ -49,12 +49,12 @@ func Register(registry *world.BasicBlockRegistry) {
 				itemName: itemName,
 			}
 			world.RegisterItem(it)
-			world.RegisterBlock(it)
+			registry.RegisterBlock(it)
 			registeredBlocks++
 			registeredItems++
 			continue
 		}
-		world.RegisterBlock(bl)
+		registry.RegisterBlock(bl)
 		registeredBlocks++
 	}
 	if Logging {
