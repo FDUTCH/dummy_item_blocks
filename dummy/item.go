@@ -4,6 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
+
 	"github.com/df-mc/dragonfly/server/block"
 )
 
@@ -24,7 +25,7 @@ func (b ItemBlock) EncodeItem() (name string, meta int16) {
 }
 
 func (b ItemBlock) BreakInfo() block.BreakInfo {
-	bl := allBlocks[b.index]
+	bl := allBlocks[b.name]
 
 	return block.BreakInfo{
 		Hardness:        bl.Hardness,

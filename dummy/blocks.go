@@ -20,7 +20,7 @@ func isRegistered(bl world.Block) bool {
 	return "unknownBlock" != reflect.ValueOf(bl).Type().Name()
 }
 
-func Register(registry world.BlockRegistry) {
+func Register(registry *world.BasicBlockRegistry) {
 	parseBlockData()
 	paseItemData()
 
@@ -29,7 +29,10 @@ func Register(registry world.BlockRegistry) {
 		registeredBlocks int
 	)
 
-	for _, b := range registry.Blocks() {
+	c := registry.Clone()
+	c.Finalize()
+
+	for _, b := range c.Blocks() {
 		if isRegistered(b) {
 			continue
 		}

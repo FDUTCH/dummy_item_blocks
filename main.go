@@ -8,13 +8,14 @@ import (
 	"github.com/FDUTCH/dummy_item_blocks/dummy"
 	"github.com/df-mc/dragonfly/server"
 	"github.com/df-mc/dragonfly/server/player/chat"
+	"github.com/df-mc/dragonfly/server/world"
 	"github.com/pelletier/go-toml"
 )
 
 func main() {
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
 	dummy.Logging = true
-	dummy.Register()
+	dummy.Register(world.DefaultBlockRegistry)
 	conf, err := readConfig(slog.Default())
 	if err != nil {
 		panic(err)
