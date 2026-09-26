@@ -1,12 +1,17 @@
 package dummy
 
 import (
+	"bufio"
+	"bytes"
+	_ "embed"
 	"fmt"
 	"log/slog"
 	"reflect"
 	_ "unsafe"
 
 	"github.com/df-mc/dragonfly/server/block"
+	"github.com/df-mc/dragonfly/server/item"
+	"github.com/df-mc/dragonfly/server/item/creative"
 	"github.com/df-mc/dragonfly/server/world"
 )
 
@@ -21,6 +26,14 @@ func isRegistered(bl world.Block) bool {
 }
 
 func Register(registry *world.BasicBlockRegistry) {
+	eduGroup := creative.Group{
+		Category: creative.ItemsCategory(),
+		Name:     "edu",
+		Icon:     item.NewStack(item.EnderEye{}, 1),
+	}
+
+	creative.RegisterGroup(eduGroup)
+
 	parseBlockData()
 	paseItemData()
 
@@ -36,6 +49,9 @@ func Register(registry *world.BasicBlockRegistry) {
 		if isRegistered(b) {
 			continue
 		}
+
+		name, _ := b.EncodeBlock()
+
 		name, state := b.EncodeBlock()
 		bl := Block{
 			name:  name,
@@ -48,8 +64,19 @@ func Register(registry *world.BasicBlockRegistry) {
 				Block:    bl,
 				itemName: itemName,
 			}
+
+			_ = it
+
 			world.RegisterItem(it)
 			world.RegisterBlock(it)
+
+			if _, has := eduContent[itemName]; has {
+				creative.RegisterItem(creative.Item{
+					Stack: item.NewStack(it, 1),
+					Group: "edu",
+				})
+			}
+
 			registeredBlocks++
 			registeredItems++
 			continue
@@ -59,5 +86,18 @@ func Register(registry *world.BasicBlockRegistry) {
 	}
 	if Logging {
 		slog.Info(fmt.Sprintf("there were registered %d new items and %d new blocks", registeredItems, registeredBlocks))
+	}
+}
+
+var eduContent = make(map[string]struct{})
+
+//go:embed penis.txt
+var eduBlocks []byte
+
+func init() {
+	s := bufio.NewScanner(bytes.NewReader(eduBlocks))
+
+	for s.Scan() {
+		eduContent[s.Text()] = struct{}{}
 	}
 }
