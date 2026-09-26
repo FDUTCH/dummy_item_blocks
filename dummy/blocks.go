@@ -68,7 +68,7 @@ func Register(registry *world.BasicBlockRegistry) {
 			_ = it
 
 			world.RegisterItem(it)
-			world.RegisterBlock(it)
+			registry.RegisterBlock(it)
 
 			if _, has := eduContent[itemName]; has {
 				creative.RegisterItem(creative.Item{
@@ -81,7 +81,7 @@ func Register(registry *world.BasicBlockRegistry) {
 			registeredItems++
 			continue
 		}
-		world.RegisterBlock(bl)
+		registry.RegisterBlock(bl)
 		registeredBlocks++
 	}
 	if Logging {
